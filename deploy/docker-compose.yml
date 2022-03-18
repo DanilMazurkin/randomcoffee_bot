@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  web:
+    command: uvicorn bot_api.main:app --host 0.0.0.0
+    build:
+      context: ../
+      dockerfile: ./bot_api/Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - 8080:8000
+  bot:
+    depends_on:
+      - web
+    volumes:
+      - .:/app
+    build:
+      context: ../
+      dockerfile: ./bot/Dockerfile
+    command: python ./bot/run_bot.py
+    env_file:
+      - .env
